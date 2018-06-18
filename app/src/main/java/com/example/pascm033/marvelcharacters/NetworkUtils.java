@@ -15,19 +15,14 @@ import retrofit2.Response;
 public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    //Base URI for the Books API
-    private static final String BOOK_BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
-    //parameter for the search string
-    private static final String QUERY_PARAM = "q";
-    //parameter that limits the search results
-    private static final String MAX_RESULTS = "maxResults";
-    //parameter to filter by print type
-    private static final String PRINT_TYPE = "printType";
+    private String apiKey = "c62371aa0f963dd954418fdabf344922";
+    private String pKey = "9b360be1902794bf22e66cd6c8f7fb8a4219d6fa";
+    private static final String CHARACTER_BASE_URL = "http(s)://gateway.marvel.com/";
 
-    static VolumesResponse getBookInfo(String query, int max, String type) {
-        BookService bookService = RetrofitUtils.getInstance().create(BookService.class);
+    static CharacterResponse getCharacterInfo(String query) {
+        OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);
         try {
-            Response<VolumesResponse> response = bookService.getBooks(query, max, type)
+            Response<CharacterResponse> response = oneCharacter.getCharacter(query)
                     .execute();
 
             if (response != null) {
@@ -40,64 +35,6 @@ public class NetworkUtils {
         return null;
     }
 
-    static String getBookInfo(String queryString) {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
 
-        String bookJSONString = null;
-
-        //create the HTTP request
-        try {
-
-            //build up your query URI, limiting results to 10 items and printed books
-            Uri builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, queryString)
-                    .appendQueryParameter(MAX_RESULTS, "10")
-                    .appendQueryParameter(PRINT_TYPE, "books")
-                    .build();
-
-            //URI -> URL
-            URL requestURL = new URL(builtURI.toString());
-
-            //open the URL connection and make the request
-            urlConnection = (HttpURLConnection) requestURL.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
-            }
-
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
-            if (buffer.length() == 0) {
-                return null;
-            }
-            bookJSONString = buffer.toString();
-
-        }  catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            if(urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if(reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            Log.d(LOG_TAG, bookJSONString);
-         return bookJSONString;
-        }
-    }
 
 }

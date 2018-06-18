@@ -7,12 +7,12 @@ public class RetrofitUtils {
 
     private static Retrofit retrofit;
 
-    private static final String BOOK_BASE_URL = "https://www.googleapis.com/";
+    private static final String CHARACTER_BASE_URL = "https://gateway.marvel.com/";
 
     public static Retrofit getInstance() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BOOK_BASE_URL)
+                    .baseUrl(CHARACTER_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
