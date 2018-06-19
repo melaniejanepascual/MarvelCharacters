@@ -1,25 +1,27 @@
 package com.example.pascm033.marvelcharacters;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    EditText mCharacterInput;
-    TextView mNameText;
-    TextView mDescriptionText;
-    ImageView mCharacterImg;
+    private EditText mCharacterInput;
+    private TextView mNameText;
+    private TextView mDescriptionText;
+    private ImageView mCharacterImg;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
@@ -27,11 +29,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mCharacterInput = (EditText) findViewById(R.id.characterInput);
-        mNameText = (TextView) findViewById(R.id.nameText);
-        mDescriptionText = (TextView) findViewById(R.id.descriptionText);
+        mCharacterInput = findViewById(R.id.characterInput);
+        mNameText = findViewById(R.id.nameText);
+        mDescriptionText = findViewById(R.id.descriptionText);
         mCharacterImg = findViewById(R.id.characterImg);
+        mRecyclerView = findViewById(R.id.rvMarvel);
+
+        // set a grid layout manager
+        int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, gridColumnCount));
+
+        // specify an adapter
+        MarvelCharacterAdapter mAdapter = new MarvelCharacterAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+
     }
+
+
 
     public void searchCharacters(View view) {
         String queryString = mCharacterInput.getText().toString();
@@ -49,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         //correct case
         if(networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+            //search up a specific character
             new FetchCharacter(mNameText, mDescriptionText, mCharacterImg).execute(queryString);
             mDescriptionText.setText("");
             mNameText.setText(R.string.loading);

@@ -1,7 +1,14 @@
 package com.example.pascm033.marvelcharacters;
 
+import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,24 +16,36 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import retrofit2.Response;
 
 public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    private String apiKey = "c62371aa0f963dd954418fdabf344922";
-    private String pKey = "9b360be1902794bf22e66cd6c8f7fb8a4219d6fa";
-    private static final String CHARACTER_BASE_URL = "http(s)://gateway.marvel.com/";
+    private static String apiKey = "c62371aa0f963dd954418fdabf344922";
+    private static String pKey = "9b360be1902794bf22e66cd6c8f7fb8a4219d6fa";
 
-    static CharacterResponse getCharacterInfo(String query) {
+    static MarvelResponse getCharacterInfo(String query) {
         OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);
+
         try {
-            Response<CharacterResponse> response = oneCharacter.getCharacter(query)
+            String ts = "1";
+            String hash = ts + pKey + apiKey;
+
+            hash = md5(hash);
+
+            Response<MarvelResponse> response = oneCharacter
+                    .getCharacter(query, apiKey, ts, hash)
                     .execute();
 
-            if (response != null) {
+            if (response != null && response.isSuccessful()) {
                 return response.body();
+            }
+            if (response.code() >= 400 && response.code() < 500) {
+                Log.e("TAG", response.code() + " " + response.errorBody().string());
             }
 
         } catch (IOException ex) {
@@ -36,5 +55,58 @@ public class NetworkUtils {
     }
 
 
+    static MarvelResponse getAllCharacters() {
+        OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);
+
+        try {
+            String ts = "1";
+            String hash = ts + pKey + apiKey;
+
+            hash = md5(hash);
+
+            Response<MarvelResponse> response = oneCharacter
+                    .getAllCharacters(apiKey, ts, hash)
+                    .execute();
+
+            if (response != null && response.isSuccessful()) {
+                return response.body();
+            }
+            if (response.code() >= 400 && response.code() < 500) {
+                Log.e("TAG", response.code() + " " + response.errorBody().string());
+            }
+
+        } catch (IOException ex) {
+            Log.e("TAG", "Error in API call");
+        }
+        return null;
+    }
+
+    /**
+     * md5 algorithm for hash variable
+     *
+     * @param s
+     * @return
+     */
+    public static String md5(String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i = 0; i < messageDigest.length; i++)
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 
 }
+
+
