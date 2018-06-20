@@ -20,6 +20,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NetworkUtils {
@@ -27,6 +29,46 @@ public class NetworkUtils {
 
     private static String apiKey = "c62371aa0f963dd954418fdabf344922";
     private static String pKey = "9b360be1902794bf22e66cd6c8f7fb8a4219d6fa";
+
+    interface ApiCallListener {
+        void onSuccess(MarvelResponse marvelResponse);
+        void onFailure(Throwable throwable);
+    }
+
+    /**
+     * grabbing one character without using AsyncTaskgit
+     * @param listener
+     */
+    static void getCharacterInfoAsync(final ApiCallListener listener) {
+        OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);
+
+            String ts = "1";
+            String hash = ts + pKey + apiKey;
+
+            hash = md5(hash);
+
+            oneCharacter
+                    .getAllCharacters(apiKey, ts, hash)
+                    .enqueue(new Callback<MarvelResponse>() {
+                        @Override
+                        public void onResponse(Call<MarvelResponse> call, Response<MarvelResponse> response) {
+                            if (response != null) {
+                                if (response.isSuccessful()) {
+                                    listener.onSuccess(response.body());
+                                } else {
+                                    try {
+                                        Log.e("TAG", "Error with code: " + response.code() + " " + response.errorBody().string());
+                                    } catch (Exception ex) {}
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MarvelResponse> call, Throwable t) {
+                            listener.onFailure(t);
+                        }
+                    });
+    }
 
     static MarvelResponse getCharacterInfo(String query) {
         OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);
@@ -54,6 +96,10 @@ public class NetworkUtils {
         return null;
     }
 
+    /**
+     * function to call all marvel characters
+     * @return
+     */
 
     static MarvelResponse getAllCharacters() {
         OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);

@@ -3,6 +3,7 @@ package com.example.pascm033.marvelcharacters;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,9 @@ public class MarvelCharacterAdapter extends
     //data
     private List<CharacterInfo> characterInfoList;
 
-    public void setCharacterInfoList(List<CharacterInfo> characterInfoList) {
+    //constructor
+    public MarvelCharacterAdapter(List<CharacterInfo> characterInfoList) {
         this.characterInfoList = characterInfoList;
-        notifyDataSetChanged(); //refreshing the list
     }
 
     /**
@@ -40,7 +41,7 @@ public class MarvelCharacterAdapter extends
          */
         public MarvelCharacterViewHolder(View itemView) {
             super(itemView);
-            marvelPic = (ImageView) itemView.findViewById(R.id.characterImg);
+            marvelPic = itemView.findViewById(R.id.characterImg);
         }
     }
 

@@ -16,12 +16,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText mCharacterInput;
-    private TextView mNameText;
-    private TextView mDescriptionText;
-    private ImageView mCharacterImg;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    EditText mCharacterInput;
+    TextView mNameText;
+    TextView mDescriptionText;
+    ImageView mCharacterImg;
+    RecyclerView mRecyclerView;
 
 
     @Override
@@ -39,13 +38,21 @@ public class MainActivity extends AppCompatActivity {
         int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, gridColumnCount));
 
-        // specify an adapter
-        MarvelCharacterAdapter mAdapter = new MarvelCharacterAdapter();
-        mRecyclerView.setAdapter(mAdapter);
-
+        NetworkUtils.getCharacterInfoAsync(apiCallListener);
     }
 
+    private NetworkUtils.ApiCallListener apiCallListener = new NetworkUtils.ApiCallListener() {
+        @Override
+        public void onSuccess(MarvelResponse marvelResponse) {
+            MarvelCharacterAdapter adapter = new MarvelCharacterAdapter(marvelResponse.getMarvelInfo().getCharacterInfoList());
+            mRecyclerView.setAdapter(adapter);
+        }
 
+        @Override
+        public void onFailure(Throwable throwable) {
+
+        }
+    };
 
     public void searchCharacters(View view) {
         String queryString = mCharacterInput.getText().toString();
