@@ -60,9 +60,12 @@ public class MarvelCharacterAdapter extends
     public void onBindViewHolder(@NonNull MarvelCharacterAdapter.MarvelCharacterViewHolder holder, int position) {
         // gets an image with a CharacterInfo instance, then converts it from URL to an image
         CharacterInfo info = characterInfoList.get(position);
-        Picasso.get()
-                .load(Uri.parse(info.getThumbnail().getPath() + "." + info.getThumbnail().getExtension()))
-                .into(holder.marvelPic);
+        if(!(info.getThumbnail().getPath().equals("http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available"))){
+            Picasso.get()
+                    .load(Uri.parse(info.getThumbnail().getPath() + "." + info.getThumbnail().getExtension()))
+                    .resize(500, 500)
+                    .into(holder.marvelPic);
+        }
     }
 
     @Override

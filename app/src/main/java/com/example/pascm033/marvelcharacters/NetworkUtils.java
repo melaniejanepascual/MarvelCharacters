@@ -1,24 +1,10 @@
 package com.example.pascm033.marvelcharacters;
 
-import android.media.Image;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,15 +16,26 @@ public class NetworkUtils {
     private static String apiKey = "c62371aa0f963dd954418fdabf344922";
     private static String pKey = "9b360be1902794bf22e66cd6c8f7fb8a4219d6fa";
 
+    /**
+     * interface for callbacks
+     */
+
     interface ApiCallListener {
         void onSuccess(MarvelResponse marvelResponse);
         void onFailure(Throwable throwable);
     }
 
+    interface ApiCharacterListener {
+        void onSuccess(CharacterInfo characterInfo);
+        void onFailure(Throwable throwable);
+    }
+
     /**
-     * grabbing one character without using AsyncTaskgit
+     * grabbing all characters without using AsyncTask
+     *      ~still working on background thread
      * @param listener
      */
+
     static void getCharacterInfoAsync(final ApiCallListener listener) {
         OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);
 
@@ -47,53 +44,56 @@ public class NetworkUtils {
 
             hash = md5(hash);
 
+            // enqueue asynchronously sends the request and notify callback of its response
             oneCharacter
-                    .getAllCharacters(apiKey, ts, hash)
-                    .enqueue(new Callback<MarvelResponse>() {
-                        @Override
-                        public void onResponse(Call<MarvelResponse> call, Response<MarvelResponse> response) {
-                            if (response != null) {
-                                if (response.isSuccessful()) {
-                                    listener.onSuccess(response.body());
-                                } else {
-                                    try {
-                                        Log.e("TAG", "Error with code: " + response.code() + " " + response.errorBody().string());
-                                    } catch (Exception ex) {}
-                                }
-                            }
+                .getAllCharacters(apiKey, ts, hash)
+                .enqueue(new Callback<MarvelResponse>() {
+                    @Override
+                    public void onResponse(Call<MarvelResponse> call, Response<MarvelResponse> response) {
+                        if (response.isSuccessful()) {
+                            listener.onSuccess(response.body());
+                        } else {
+                            try {
+                                Log.e("TAG", "Error with code: " + response.code() + " " + response.errorBody().string());
+                            } catch (Exception ex) {}
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<MarvelResponse> call, Throwable t) {
-                            listener.onFailure(t);
-                        }
-                    });
+                    @Override
+                    public void onFailure(Call<MarvelResponse> call, Throwable t) {
+                        listener.onFailure(t);
+                    }
+                });
     }
 
-    static MarvelResponse getCharacterInfo(String query) {
+    /**
+     * Method to perform the search function for only one character
+     * @param query
+     * @return
+     */
+    static void getCharacterInfo(String query, final ApiCharacterListener listener) {
         OneCharacter oneCharacter = RetrofitUtils.getInstance().create(OneCharacter.class);
 
-        try {
-            String ts = "1";
-            String hash = ts + pKey + apiKey;
+        String ts = "1";
+        String hash = ts + pKey + apiKey;
 
-            hash = md5(hash);
+        hash = md5(hash);
 
-            Response<MarvelResponse> response = oneCharacter
-                    .getCharacter(query, apiKey, ts, hash)
-                    .execute();
+        oneCharacter
+            .getCharacter(query, apiKey, ts, hash)
+            .enqueue(new Callback<MarvelResponse>() {
+                @Override
+                public void onResponse(Call<MarvelResponse> call, Response<MarvelResponse> response) {
+                    if (response.isSuccessful()) {
+                        listener.onSuccess(response.body().getMarvelInfo().getCharacterInfoList().get(0));
+                    }
+                }
 
-            if (response != null && response.isSuccessful()) {
-                return response.body();
-            }
-            if (response.code() >= 400 && response.code() < 500) {
-                Log.e("TAG", response.code() + " " + response.errorBody().string());
-            }
-
-        } catch (IOException ex) {
-            Log.e("TAG", "Error in API call");
-        }
-        return null;
+                @Override
+                public void onFailure(Call<MarvelResponse> call, Throwable t) {
+                    listener.onFailure(t);
+                }
+            });
     }
 
     /**
