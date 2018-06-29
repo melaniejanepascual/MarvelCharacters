@@ -11,7 +11,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NetworkUtils {
-    private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
     private static String apiKey = "c62371aa0f963dd954418fdabf344922";
     private static String pKey = "9b360be1902794bf22e66cd6c8f7fb8a4219d6fa";

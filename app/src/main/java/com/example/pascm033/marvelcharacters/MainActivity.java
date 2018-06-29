@@ -12,10 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     EditText mCharacterInput;
     RecyclerView mRecyclerView;
+    ProgressBar mLoading;
 
 
     @Override
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         mCharacterInput = findViewById(R.id.characterInput);
         mRecyclerView = findViewById(R.id.rvMarvel);
+        mLoading = findViewById(R.id.loading);
 
         // set a grid layout manager
         int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
@@ -33,16 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
         //load all the pics from API, doesn't use AsyncTask
         NetworkUtils.getCharacterInfoAsync(apiCallListener);
+
     }
 
     public void characterSearch(View view) {
-
-        //testing
-        Log.d("TAG", "Search button is clicked");
-
-
         String queryString = mCharacterInput.getText().toString();
 
+        mLoading.setVisibility(View.VISIBLE);
         //hiding the keyboard
         InputMethodManager inputManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
