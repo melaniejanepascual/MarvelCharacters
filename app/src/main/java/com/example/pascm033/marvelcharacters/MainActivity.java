@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
     EditText mCharacterInput;

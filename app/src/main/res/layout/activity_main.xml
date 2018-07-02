@@ -7,13 +7,32 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/marvelToolbar"
+        style="style/MarvelToolbarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/marvellogo"/>
+    </android.support.v7.widget.Toolbar>
+
     <EditText
         android:id="@+id/characterInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/input_hint"
-        android:inputType="text" />
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@+id/marvelToolbar" />
 
     <Button
         android:id="@+id/searchButton"
@@ -21,7 +40,8 @@
         android:layout_height="wrap_content"
         android:onClick="characterSearch"
         android:text="@string/button_text"
-        app:layout_constraintLeft_toRightOf="@+id/characterInput" />
+        app:layout_constraintLeft_toRightOf="@+id/characterInput"
+        app:layout_constraintTop_toBottomOf="@+id/marvelToolbar" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -29,8 +49,10 @@
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:progress="25"
+        android:layout_gravity="center"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@+id/searchButton" />
+        app:layout_constraintLeft_toRightOf="@+id/searchButton"
+        app:layout_constraintTop_toBottomOf="@+id/marvelToolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvMarvel"
