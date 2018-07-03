@@ -8,8 +8,8 @@
     tools:context=".MainActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/marvelToolbar"
-        style="style/MarvelToolbarStyle"
+        android:id="@+id/marvelToolbarContainer"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -24,15 +24,16 @@
             android:src="@drawable/marvellogo"/>
     </android.support.v7.widget.Toolbar>
 
+
     <EditText
         android:id="@+id/characterInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:layout_weight="1"
+        android:ems="10"
         android:hint="@string/input_hint"
         android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@+id/marvelToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/marvelToolbarContainer" />
 
     <Button
         android:id="@+id/searchButton"
@@ -41,7 +42,7 @@
         android:onClick="characterSearch"
         android:text="@string/button_text"
         app:layout_constraintLeft_toRightOf="@+id/characterInput"
-        app:layout_constraintTop_toBottomOf="@+id/marvelToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/marvelToolbarContainer"/>
 
     <ProgressBar
         android:id="@+id/loading"
@@ -52,7 +53,7 @@
         android:layout_gravity="center"
         android:visibility="invisible"
         app:layout_constraintLeft_toRightOf="@+id/searchButton"
-        app:layout_constraintTop_toBottomOf="@+id/marvelToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/marvelToolbarContainer" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvMarvel"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,24 +7,47 @@
     android:orientation="vertical"
     tools:context=".SingleCharacterInformationActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/marvelToolbarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/marvellogo" />
+    </android.support.v7.widget.Toolbar>
+
     <TextView
         android:id="@+id/nameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:layout_gravity="center"/>
+        app:layout_constraintTop_toBottomOf="@+id/marvelToolbarContainer" />
 
     <ImageView
         android:id="@+id/characterImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/nameText" />
 
     <TextView
         android:id="@+id/descriptionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:gravity="center"/>
+        app:layout_constraintTop_toBottomOf="@+id/characterImg" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
