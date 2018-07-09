@@ -74,4 +74,8 @@ public class MarvelCharacterAdapter extends
         return characterInfoList.size();
     }
 
+    public CharacterInfo getItem(int position) {
+        return characterInfoList.get(position);
+    }
+
 }

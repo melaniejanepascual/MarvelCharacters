@@ -2,6 +2,7 @@ package com.example.pascm033.marvelcharacters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Surface;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -34,27 +36,39 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
 
-        // set a grid layout manager
-        int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        if(Configuration.ORIENTATION_PORTRAIT == getResources().getConfiguration().orientation) {
+            int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
+            mRecyclerView.setLayoutManager(gridLayoutManager);
+        } else if (Configuration.ORIENTATION_LANDSCAPE == getResources().getConfiguration().orientation) {
+            int gridColumnCountLandscape = getResources().getInteger(R.integer.grid_column_count_landscape);
+            GridLayoutManager gridLandscapeLayoutManager = new GridLayoutManager(this, gridColumnCountLandscape);
+            mRecyclerView.setLayoutManager(gridLandscapeLayoutManager);
+        }
 
-        //load all the pics from API, doesn't use AsyncTask
         NetworkUtils.getCharacterInfoAsync(apiCallListener);
 
     }
 
+    //TODO: question, why is loading always true?
+    public void setLoading(boolean loading) {
+        if (loading = true) {
+            mLoading.setVisibility(View.VISIBLE);
+        } else {
+            mLoading.setVisibility(View.GONE);
+        }
+    }
+
     public void characterSearch(View view) {
         String queryString = mCharacterInput.getText().toString();
+        setLoading(true);
 
-        mLoading.setVisibility(View.VISIBLE);
-        //hiding the keyboard
+        // TODO: question, how do keyboard assignments/inputmethodmanagers work?
         InputMethodManager inputManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
 
-        //checking network connection
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -63,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         if(networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
             //search up a specific character
             NetworkUtils.getCharacterInfo(queryString, apiCharacterListener);
+            setLoading(false);
         }
     }
 
@@ -89,12 +104,6 @@ public class MainActivity extends AppCompatActivity {
         public void onSuccess(MarvelResponse marvelResponse) {
             MarvelCharacterAdapter adapter = new MarvelCharacterAdapter(marvelResponse.getMarvelInfo().getCharacterInfoList());
             mRecyclerView.setAdapter(adapter);
-
-            //hiding the keyboard
-            InputMethodManager inputManager = (InputMethodManager)
-                    getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
         @Override
