@@ -1,29 +1,19 @@
 package com.example.pascm033.marvelcharacters;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 /**
  * Adapter: binds all the data to the all the views
  */
 public class MarvelCharacterAdapter extends
-        RecyclerView.Adapter<MarvelCharacterAdapter.MarvelCharacterViewHolder> {
+        RecyclerView.Adapter<MarvelCharacterViewHolder> {
 
-    //data
     private List<CharacterInfo> characterInfoList;
-
-    //constructor
     public MarvelCharacterAdapter(List<CharacterInfo> characterInfoList) {
         this.characterInfoList = characterInfoList;
     }
@@ -31,7 +21,7 @@ public class MarvelCharacterAdapter extends
 
     @NonNull
     @Override
-    public MarvelCharacterAdapter.MarvelCharacterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MarvelCharacterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.marvelcharacter_item, parent, false);
         MarvelCharacterViewHolder vh = new MarvelCharacterViewHolder(v);
@@ -39,7 +29,7 @@ public class MarvelCharacterAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MarvelCharacterAdapter.MarvelCharacterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MarvelCharacterViewHolder holder, int position) {
         CharacterInfo info = characterInfoList.get(position);
         holder.bind(info);
 
