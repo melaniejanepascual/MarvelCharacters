@@ -25,6 +25,14 @@ public class SingleCharacterInformationActivity extends AppCompatActivity {
     public static final String EXTRA_DESC = "description";
     public static final String EXTRA_IMGURL = "imageUrl";
 
+    public static void start(Context context, String name, String description, ThumbnailInfo url) {
+        Intent intent  = new Intent(context, SingleCharacterInformationActivity.class);
+        intent.putExtra(SingleCharacterInformationActivity.EXTRA_NAME, name);
+        intent.putExtra(SingleCharacterInformationActivity.EXTRA_DESC, description);
+        intent.putExtra(SingleCharacterInformationActivity.EXTRA_IMGURL,
+                url.getPath() + "." + url.getExtension());
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

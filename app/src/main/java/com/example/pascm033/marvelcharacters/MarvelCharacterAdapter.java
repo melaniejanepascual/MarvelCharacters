@@ -32,7 +32,15 @@ public class MarvelCharacterAdapter extends
      * View Holder binds data to view
      */
     class MarvelCharacterViewHolder extends RecyclerView.ViewHolder {
-        public ImageView marvelPic;
+        private ImageView marvelPic;
+        private View.OnClickListener characterClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SingleCharacterInformationActivity.start(v.getContext(), mCharacterInfo.getName(), mCharacterInfo.getDescription(), mCharacterInfo.getThumbnail() );
+            }
+        };
+
+        private CharacterInfo mCharacterInfo;
 
         /**
          * constructor
@@ -42,30 +50,35 @@ public class MarvelCharacterAdapter extends
         public MarvelCharacterViewHolder(View itemView) {
             super(itemView);
             marvelPic = itemView.findViewById(R.id.characterImg);
+            itemView.setOnClickListener(characterClickListener);
+        }
+
+        public void bind(CharacterInfo characterInfo) {
+            if(!(characterInfo.getThumbnail().getPath().equals("http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available"))){
+                Picasso.get()
+                        .load(Uri.parse(characterInfo.getThumbnail().getPath() + "." + characterInfo.getThumbnail().getExtension()))
+                        .resize(500, 500)
+                        .into(marvelPic);
+            }
+            mCharacterInfo = characterInfo;
         }
     }
+
 
     @NonNull
     @Override
     public MarvelCharacterAdapter.MarvelCharacterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // build a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.marvelcharacter_item, parent, false);
-
         MarvelCharacterViewHolder vh = new MarvelCharacterViewHolder(v);
         return vh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MarvelCharacterAdapter.MarvelCharacterViewHolder holder, int position) {
-        // gets an image with a CharacterInfo instance, then converts it from URL to an image
         CharacterInfo info = characterInfoList.get(position);
-        if(!(info.getThumbnail().getPath().equals("http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available"))){
-            Picasso.get()
-                    .load(Uri.parse(info.getThumbnail().getPath() + "." + info.getThumbnail().getExtension()))
-                    .resize(500, 500)
-                    .into(holder.marvelPic);
-        }
+        holder.bind(info);
+
     }
 
     @Override
