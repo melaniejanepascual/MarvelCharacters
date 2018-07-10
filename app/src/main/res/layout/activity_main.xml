@@ -26,9 +26,9 @@
 
     <EditText
         android:id="@+id/characterInput"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:ems="10"
         android:hint="@string/input_hint"
         android:inputType="text"
@@ -38,6 +38,7 @@
         android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:onClick="characterSearch"
         android:text="@string/button_text"
         app:layout_constraintLeft_toRightOf="@+id/characterInput"
