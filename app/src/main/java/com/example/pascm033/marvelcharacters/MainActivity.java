@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
 
+        // setting up the grid layout for portrait and landscape orientation
         if(Configuration.ORIENTATION_PORTRAIT == getResources().getConfiguration().orientation) {
             int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
@@ -50,9 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //TODO: question, why is loading always true?
     public void setLoading(boolean loading) {
-        if (loading = true) {
+        if (loading) {
             mLoading.setVisibility(View.VISIBLE);
         } else {
             mLoading.setVisibility(View.GONE);
@@ -60,10 +60,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void characterSearch(View view) {
-        String queryString = mCharacterInput.getText().toString();
+        String queryString = mCharacterInput.getText().toString();  // convert query to string
         setLoading(true);
 
-        // TODO: question, how do keyboard assignments/inputmethodmanagers work?
         InputMethodManager inputManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
@@ -73,14 +72,13 @@ public class MainActivity extends AppCompatActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        //correct case
         if(networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
-            //search up a specific character
-            NetworkUtils.getCharacterInfo(queryString, apiCharacterListener);
+            NetworkUtils.getCharacterInfo(queryString, apiCharacterListener);   // api call for character search
             setLoading(false);
         }
     }
 
+    // TODO: What does this do
     private NetworkUtils.ApiCharacterListener apiCharacterListener = new NetworkUtils.ApiCharacterListener() {
         @Override
         public void onSuccess(CharacterInfo characterInfo) {

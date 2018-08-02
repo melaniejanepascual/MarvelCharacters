@@ -43,10 +43,10 @@ public class NetworkUtils {
 
             hash = md5(hash);
 
-            // enqueue asynchronously sends the request and notify callback of its response
             oneCharacter
                 .getAllCharacters(apiKey, ts, hash)
-                .enqueue(new Callback<MarvelResponse>() {
+                .enqueue(new Callback<MarvelResponse>() {   // enqueue asynchronously sends request and notify callback of its response
+
                     @Override
                     public void onResponse(Call<MarvelResponse> call, Response<MarvelResponse> response) {
                         if (response.isSuccessful()) {
@@ -116,6 +116,8 @@ public class NetworkUtils {
             if (response != null && response.isSuccessful()) {
                 return response.body();
             }
+
+            // logging errors
             if (response.code() >= 400 && response.code() < 500) {
                 Log.e("TAG", response.code() + " " + response.errorBody().string());
             }

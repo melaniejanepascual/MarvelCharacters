@@ -13,6 +13,7 @@ public class ThumbnailInfo {
     public String getPath() {
         return path;
     }
+
     public String getExtension() {
         return extension;
     }
